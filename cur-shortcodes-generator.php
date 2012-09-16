@@ -44,10 +44,10 @@ class Cur_Shortcodes_Generator{
 		$shortcodes =& $this->get_shortcodes_array();
 		if ( $shortcodes ) {
 
-			if( !isset( $shortcodes['title'] ){
+			if( !isset( $shortcodes['title'] ) ){
 				$shortcodes['title'] = 'CurShortcodes';
 			}
-			if( !isset( $shortcodes['slug'] ){
+			if( !isset( $shortcodes['slug'] ) ){
 				$shortcodes['slug'] = 'cur_shortcodes_button';
 			}
 			$this->shortcodes = $shortcodes;
