@@ -33,7 +33,8 @@ class Cur_Shortcodes_Generator{
 
 	var $shortcodes;
 	var $generate_output = false;
-	var $plugin_pat;
+	var $plugin_path;
+	var $theme;
 
 	function __construct() {
 
@@ -42,7 +43,7 @@ class Cur_Shortcodes_Generator{
 		if ( $shortcodes ) {
 
 			$this->shortcodes = $shortcodes;
-			$this->plugins_path = dirname( __FILE__ );
+			$this->plugin_path = dirname( __FILE__ );
 
 			// Require related shortcodes functions, if they exist
 			$this->get_shortcodes_functions();
@@ -57,12 +58,12 @@ class Cur_Shortcodes_Generator{
 			add_filter( 'tiny_mce_version', array( &$this, 'refresh_mce' ) );
 			add_action( 'admin_print_styles', array( &$this, 'shortcodes_button_css' ) );
 
-			add_acction( 'init', array( &$this, 'generate_shortcodes' ) );
+			add_action( 'init', array( &$this, 'generate_shortcodes' ) );
 	
 		}
 		else {
 			// Display a notice if options aren't present in the theme
-			add_action('admin_notices', array( &$this, 'admin_notice');
+			add_action('admin_notices', array( &$this, 'admin_notice') );
 			add_action('admin_init', array(&$this, 'nag_ignore') );
 		}
 
@@ -70,29 +71,37 @@ class Cur_Shortcodes_Generator{
 	
 	function get_shortcodes_array(){
 
+		$theme = wp_get_theme();
+
 		// Load shortcodes from shortcodes/array.php file (if it exists)
-		$location = apply_filters( 'shortcodes_array_location', array('shortcodes/array.php') );
+		$location = apply_filters( 'shortcodes_array_location', 'shortcodes/array.php' );
+		$location_path = $theme->theme_root . '/' . $theme->template . '/' . $location;
 
-		if ( $shortcodes_array_file = locate_template( $location ) ) {
+		if ( file_exists( $location_path ) ) {
 
-			$maybe_shortcodes = require_once $shortcodes_array_file;
+			$maybe_shortcodes = require_once $location_path;
 
-			if ( !is_array($maybe_shortcodes && function_exists('cur_shortcodes_generator_shortcodes')) {
+			if ( !is_array( $maybe_shortcodes ) && function_exists('cur_shortcodes_generator_shortcodes') ) {
 				$shortcodes = cur_shortcodes_generator_shortcodes();
 			}
-		}
 
-		return $shortcodes;
+			return $shortcodes;
+
+		}
+		return false;
 	}
 
 	function get_shortcodes_functions(){
 
+		$theme = wp_get_theme();
+
 		// Load shortcodes from shortcodes/functions.php file (if it exists)
-		$location = apply_filters( 'shortcodes_functions_location', array('shortcodes/functions.php') );
+		$location = apply_filters( 'shortcodes_functions_location', 'shortcodes/functions.php' );
+		$location_path = $theme->theme_root . '/' . $theme->template . '/' . $location;
 
-		if ( $shortcodes_functions_file = locate_template( $location ) ) {
+		if ( file_exists( $location ) ) {
 
-			require_once $shortcodes_array_file;
+			require_once $location_path;
 
 		}
 
@@ -101,7 +110,7 @@ class Cur_Shortcodes_Generator{
 	function admin_notice() {
 
 		global $pagenow;
-		if ( !is_multisite() && ( $pagenow == 'plugins.php' ||  $pagenow == 'themes.php') ) {
+		if ( $pagenow == 'plugins.php' ||  $pagenow == 'themes.php' ) {
 			global $current_user;
 			$user_id = $current_user->ID;
 			if ( ! get_user_meta($user_id, 'cur_shortcodes_generator_ignore_notice') ) {
@@ -140,7 +149,7 @@ class Cur_Shortcodes_Generator{
 		if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') ) return;
 		if ( get_user_option('rich_editing') == 'true') :
 			add_filter('mce_external_plugins', array( &$this, 'add_shortcode_tinymce_plugin' ) );
-			add_filter('mce_buttons', array( &$this, 'cur_register_shortcode_button') );
+			add_filter('mce_buttons', array( &$this, 'register_shortcode_button') );
 		endif;
 	}
 
@@ -166,7 +175,7 @@ class Cur_Shortcodes_Generator{
 	 * @return array
 	 */
 	function add_shortcode_tinymce_plugin($plugin_array) {
-		$plugin_array['CurShortcodes'] = get_template_directory_uri() . '/inc/shortcodes/assets/js/editor-plugin.js';
+		$plugin_array['CurShortcodes'] = plugins_url( '/assets/js/editor-plugin.js', __FILE__ );
 		return $plugin_array;
 	}
 
