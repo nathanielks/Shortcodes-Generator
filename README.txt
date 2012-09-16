@@ -31,9 +31,9 @@ You can check out more details on how to use the plugin, please visit [the plugi
 Well, after you've moved the `shortcodes` folder to your theme, open up
 `shortcodes/array.php`. The simplest one you can make would look like this:
 
-`$shortcodes['button'] = array(
-	'shortcode'	=> 'button'
-);`
+	$shortcodes['button'] = array(
+		'shortcode'	=> 'button'
+	);
 
 That would create a shortcode that looks like this: `[button]`
 
@@ -41,66 +41,65 @@ Then, for every shortcode you wish to add, just repeat
 `$shortcodes['shortcode']` with the details filled in!
 
 The template is as follows:
-`
-$shortcodes['name'] => array(
-	'shortcode'	=> '',
-	'function' => '',
-	'tag'	=> '',
-	'selectable' => 0
-	'params' => array(
-		'name', 'name2'
-	),
-	'children'=> array(
-		'child' => array(
-			'shortcode' => '',
-			'function' => '',
-			'tag'	=> '',
-			'selectable' => 0
-			'params' => array(
-			      'name', 'name2'
-			),
+
+	$shortcodes['name'] = array(
+		'shortcode'	=> '',
+		'function' => '',
+		'tag'	=> '',
+		'selectable' => 0
+		'params' => array(
+			'name', 'name2'
 		),
-	)
-);
-`
+		'children'=> array(
+			'child' => array(
+				'shortcode' => '',
+				'function' => '',
+				'tag'	=> '',
+				'selectable' => 0
+				'params' => array(
+				      'name', 'name2'
+				),
+			),
+		)
+	);
+
 = This seems too simple. What if I want more control? =
 
 To use a specific function along with the short code, all you have to do is pass
 `'function' => 'function_name'` as one of the paramaters for the array. Here's
 an example:
 
-`
-$shortcodes['button'] = array(
-	'shortcode' => 'button',
-	'function' => 'cur_button_shortcode',
-	'selectable' => 1
-	'params' => array(
-		'class', 'color'
-	),
-);
-`
+	$shortcodes['button'] = array(  
+		'shortcode' => 'button',  
+		'function' => 'cur_button_shortcode',  
+		'selectable' => 1  
+		'params' => array(  
+			'class', 'color'  
+		),  
+	);  
+
 The shortcode will now use `cur_button_shortcode` as the function to run for
 the shortcode. The shortcode will look like this:
 
-`[button class="" color""][/button]`
+	[button class="" color""][/button]
 
 If you want to define some default parameters, just change params to this:
 
-`'params' => array(
-	'class' => 'small',
-	'color' => 'green'
-)`
+	'params' => array(
+		'class' => 'small',
+		'color' => 'green'
+	)
 
 It will produce this output:
 
-`[button class="small" color"green"][/button]`
+	[button class="small" color"green"][/button]
 
 Want to be able to select text and have the shortcode wrap around it? Just pass
 `'selectable' => 1`.
 
 I will eventually add a ThickBox dialogue so that people can have default
 selections picked out for them, and actually have more of a UI. But this will
-do for now.
+d
 
 == Changelog ==
 
