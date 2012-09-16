@@ -1,21 +1,6 @@
-@font-face {
-    font-family: 'TheatreFrancais';
-    src: url('../../../../assets/fonts/theatrefrancais.eot');
-    src: url('../../../../assets/fonts/theatrefrancais.eot?#iefix') format('embedded-opentype'),
-         url('../../../../assets/fonts/theatrefrancais.woff') format('woff'),
-         url('../../../../assets/fonts/theatrefrancais.ttf') format('truetype'),
-         url('../../../../assets/fonts/theatrefrancais.svg#TheatreFrancaisfrancais') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-span.mce_cur_shortcodes_button:before{
-    font-family: 'TheatreFrancais';
-    content:'l';
-    display: block;
-    font-size:18px;
-    line-height: 21px;
-    text-align: center;
-    color: rgb(34,34,34);
-}
+span.mce_cur_shortcodes_button{
+        background: url('../img/toolbox--plus.png') no-repeat 2px -21px !important;
+    }
+span.mce_cur_shortcodes_button:hover{
+        background-position:2px 3px!important;
+    }

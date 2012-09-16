@@ -34,12 +34,14 @@ class Cur_Shortcodes_Generator{
 	var $shortcodes;
 	var $generate_output = false;
 	var $plugin_path;
-	var $theme;
+	var $theme_path;
 
 	function __construct() {
+	
+		$theme = wp_get_theme();
+		$this->theme_path = $theme->theme_root . '/' . $theme->template . '/';
 
 		$shortcodes =& $this->get_shortcodes_array();
-
 		if ( $shortcodes ) {
 
 			$this->shortcodes = $shortcodes;
@@ -68,14 +70,14 @@ class Cur_Shortcodes_Generator{
 		}
 
 	}
-	
+
 	function get_shortcodes_array(){
 
 		$theme = wp_get_theme();
 
 		// Load shortcodes from shortcodes/array.php file (if it exists)
-		$location = apply_filters( 'shortcodes_array_location', 'shortcodes/array.php' );
-		$location_path = $theme->theme_root . '/' . $theme->template . '/' . $location;
+		$location = apply_filters( 'cur_shortcodes_array_location', 'shortcodes/array.php' );
+		$location_path = $this->theme_path . $location;
 
 		if ( file_exists( $location_path ) ) {
 
@@ -96,8 +98,8 @@ class Cur_Shortcodes_Generator{
 		$theme = wp_get_theme();
 
 		// Load shortcodes from shortcodes/functions.php file (if it exists)
-		$location = apply_filters( 'shortcodes_functions_location', 'shortcodes/functions.php' );
-		$location_path = $theme->theme_root . '/' . $theme->template . '/' . $location;
+		$location = apply_filters( 'cur_shortcodes_functions_location', 'shortcodes/functions.php' );
+		$location_path = $this->theme_path . $location;
 
 		if ( file_exists( $location ) ) {
 
@@ -136,7 +138,14 @@ class Cur_Shortcodes_Generator{
 	 * @return void
 	 */
 	function shortcodes_button_css() {
-		wp_enqueue_style( 'cur_shortcodes_button_css', get_template_directory_uri() . '/shortcodes/shortcodes.css' );
+
+		$css_path = apply_filters('cur_shortcodes_css_location', 'shortcodes/shortcodes.css');
+
+		if ( file_exists( $this->theme_path . $css_path ) ){ 
+			wp_enqueue_style( 'cur_shortcodes_button_css', get_template_directory_uri() . '/' . $css_path );
+		} else {
+			wp_enqueue_style( 'cur_shortcodes_button_css', plugins_url('/assets/css/shortcodes.css', __FILE__ ) );
+		}
 	}
 
 	/**
