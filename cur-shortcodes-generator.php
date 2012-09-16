@@ -44,7 +44,15 @@ class Cur_Shortcodes_Generator{
 		$shortcodes =& $this->get_shortcodes_array();
 		if ( $shortcodes ) {
 
+			if( !isset( $shortcodes['title'] ){
+				$shortcodes['title'] = 'CurShortcodes';
+			}
+			if( !isset( $shortcodes['slug'] ){
+				$shortcodes['slug'] = 'cur_shortcodes_button';
+			}
 			$this->shortcodes = $shortcodes;
+
+
 			$this->plugin_path = dirname( __FILE__ );
 
 			// Require related shortcodes functions, if they exist
@@ -142,7 +150,7 @@ class Cur_Shortcodes_Generator{
 		$css_path = apply_filters('cur_shortcodes_css_location', 'shortcodes/shortcodes.css');
 
 		if ( file_exists( $this->theme_path . $css_path ) ){ 
-			wp_enqueue_style( 'cur_shortcodes_button_css', get_template_directory_uri() . '/' . $css_path );
+			wp_enqueue_style( $this->slug . '_css', get_template_directory_uri() . '/' . $css_path );
 		} else {
 			wp_enqueue_style( 'cur_shortcodes_button_css', plugins_url('/assets/css/shortcodes.css', __FILE__ ) );
 		}
@@ -171,7 +179,7 @@ class Cur_Shortcodes_Generator{
 	 * @return array
 	 */
 	function register_shortcode_button($buttons) {
-		array_push($buttons, "|", "cur_shortcodes_button");
+		array_push($buttons, "|", $this->shortcodes['slug'] );
 		return $buttons;
 	}
 
@@ -184,7 +192,7 @@ class Cur_Shortcodes_Generator{
 	 * @return array
 	 */
 	function add_shortcode_tinymce_plugin($plugin_array) {
-		$plugin_array['CurShortcodes'] = plugins_url( '/assets/js/editor-plugin.js', __FILE__ );
+		$plugin_array[ $this->shortcodes['title'] ] = plugins_url( '/assets/js/editor-plugin.js', __FILE__ );
 		return $plugin_array;
 	}
 
