@@ -34,12 +34,10 @@ class Cur_Shortcodes_Generator{
 	var $shortcodes;
 	var $generate_output = false;
 	var $plugin_path;
-	var $theme_path;
 
 	function __construct() {
 	
 		$theme = wp_get_theme();
-		$this->theme_path = $theme->theme_root . '/' . $theme->template . '/';
 
 		$shortcodes =& $this->get_shortcodes_array();
 		if ( $shortcodes ) {
@@ -79,13 +77,23 @@ class Cur_Shortcodes_Generator{
 
 	}
 
+	/**
+	 * Searches for shortcodes/array.php in the active theme's directory. If it 
+	 * can't find it, it defaults to the cur_shortcodes_generator_shortcodes() 
+	 * function, in case the theme uses the function instead of the files. If 
+	 * it can't find that, it returns false.
+	 * 
+	 * @access public
+	 * @return $shortcodes
+	 * @return false
+	 */
 	function get_shortcodes_array(){
 
 		$theme = wp_get_theme();
 
 		// Load shortcodes from shortcodes/array.php file (if it exists)
-		$location = apply_filters( 'cur_shortcodes_array_location', 'shortcodes/array.php' );
-		$location_path = $this->theme_path . $location;
+		$location = apply_filters( 'cur_shortcodes_array_location', '/shortcodes/array.php' );
+		$location_path = get_template_directory() . $location;
 
 		if ( file_exists( $location_path ) ) {
 
@@ -101,13 +109,20 @@ class Cur_Shortcodes_Generator{
 		return false;
 	}
 
+	/**
+	 * Searches for shortcodes/functions.php in the active theme's directory 
+	 * and requires it if it exists.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function get_shortcodes_functions(){
 
 		$theme = wp_get_theme();
 
 		// Load shortcodes from shortcodes/functions.php file (if it exists)
-		$location = apply_filters( 'cur_shortcodes_functions_location', 'shortcodes/functions.php' );
-		$location_path = $this->theme_path . $location;
+		$location = apply_filters( 'cur_shortcodes_functions_location', '/shortcodes/functions.php' );
+		$location_path = get_template_directory() . $location;
 
 		if ( file_exists( $location ) ) {
 
@@ -117,6 +132,13 @@ class Cur_Shortcodes_Generator{
 
 	}
 
+	/**
+	 * Displays a notice if the active theme doesn't have an array.php file or 
+	 * cur_shortcodes_generator_shortcodes function.
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function admin_notice() {
 
 		global $pagenow;
@@ -131,6 +153,13 @@ class Cur_Shortcodes_Generator{
 		}
 	}
 
+	/**
+	 * Adds user meta if the current user toggled "Hide Notice" in 
+	 * admin_notice()
+	 * 
+	 * @access public
+	 * @return void
+	 */
 	function nag_ignore() {
 		global $current_user;
 		$user_id = $current_user->ID;
@@ -192,7 +221,7 @@ class Cur_Shortcodes_Generator{
 	 * @return array
 	 */
 	function add_shortcode_tinymce_plugin($plugin_array) {
-		$plugin_array[ $this->shortcodes['title'] ] = plugins_url( '/assets/js/editor-plugin.js', __FILE__ );
+		$plugin_array[ $this->shortcodes['title'] ] = plugins_url( '/assets/js/editor_plugin.js', __FILE__ );
 		return $plugin_array;
 	}
 
@@ -210,9 +239,18 @@ class Cur_Shortcodes_Generator{
 	}
 
 
+	/**
+	 * Takes two variables: $out and $shortcodes. $out is the path of 
+	 * editor_plugin.js. $shortcodes is the array of shortcodes to parse. 
+	 * 
+	 * @param string $out 
+	 * @param array $shortcodes 
+	 * @access public
+	 * @return void
+	 */
 	function generate_shortcodes( $out, $shortcodes ){
 
-		$editor_plugin_path = $this->plugins_path . '/assets/js/editor-plugin.js';
+		$editor_plugin_path = $this->plugins_path . '/assets/js/editor_plugin.js';
 
 		if (!is_file($editor_plugin_path) || filemtime($in) > filemtime($out)) {
 			$this->generate_output = true;
@@ -226,6 +264,19 @@ class Cur_Shortcodes_Generator{
 
 	}
 
+	/**
+	 * Iterates over the shortcodes array adding the shortcodes via anonymous 
+	 * functions or a function that's been defined by the user. If 
+	 * $this->generate_output is true, it also generates the output to write to 
+	 * editor_plugin.js
+	 * 
+	 * @param array $shortcodes 
+	 * @param int $isChildren 
+	 * @param int $isSelectable 
+	 * @param string $tag 
+	 * @access public
+	 * @return void
+	 */
 	function parse_shortcodes( $shortcodes, $isChildren = 0, $isSelectable = 0, $tag = '' ){
 
 		$output = '';
@@ -292,6 +343,15 @@ class Cur_Shortcodes_Generator{
 
 	}
 	
+	/**
+	 * Parses the shortcode parameters. If $params is an associative array, it 
+	 * will add the default values defined to the shortcode output. If it's an 
+	 * indexed array, it just adds the param key with an empty value. 
+	 * 
+	 * @param array $params 
+	 * @access public
+	 * @return void
+	 */
 	function parse_parameters( $params ){
 
 		$output = '';
@@ -309,20 +369,47 @@ class Cur_Shortcodes_Generator{
 		return $output;
 	}
 
+	/**
+	 * Checks to see if an array is associative or indexed.
+	 * 
+	 * @param array $array 
+	 * @access public
+	 * @return bool
+	 */
 	function is_assoc($array) {
 	  return (bool)count(array_filter(array_keys($array), 'is_string'));
 	}
 
+	/**
+	 * Adds a shortcode to WordPress. If no function is provided, it creates 
+	 * a simple shortcode based via add_simple_shortcode.
+	 *
+	 * @see add_simple_shortcode 
+	 * @param string $shortcode 
+	 * @param string $function 
+	 * @param string $tag 
+	 * @access public
+	 * @return void
+	 */
 	function add_shortcode( $shortcode = '', $function = '', $tag = '' ){
 
 		if( empty( $function ) ){
-			return $this->add_simple_shortcode( $shortcode, $tag );
+			add_simple_shortcode( $shortcode, $tag );
 		}	
 		
-		return add_shortcode( $shortcode, $function );
+		add_shortcode( $shortcode, $function );
 			
 	}
 
+	/**
+	 * Creates a simple shortcode based on this template: <tag 
+	 * class="shortcode"> Content </tag>, [shortcode][/shortcode]
+	 * 
+	 * @param string $shortcode 
+	 * @param string $tag 
+	 * @access public
+	 * @return void
+	 */
 	function add_simple_shortcode( $shortcode, $tag ){
 
 		$tag = ( isset( $tag ) ) ? $tag : 'div';
@@ -331,10 +418,18 @@ class Cur_Shortcodes_Generator{
 			return '<' . $tag . ' class="' . $shortcode . '">' . do_shortcode($content) . '</' . $tag . '>';
 		};
 
-		return add_shortcode($shortcode, $sc);
+		add_shortcode($shortcode, $sc);
 
 	}
 
+	/**
+	 * Compiles all the shortcode data to write to editor_plugin.js
+	 * 
+	 * @param string $data 
+	 * @param string $output 
+	 * @access public
+	 * @return void
+	 */
 	function compile( $data, $output ){
 		
 
