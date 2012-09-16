@@ -16,6 +16,10 @@ array and this plugin. [How neat is that?](http://bit.ly/Pvj4ie)
 
 You can check out more details on how to use the plugin, please visit [the plugin site.](http://fightthecurrent.org/plugins/shortcodes-generator)
 
+== Credits == 
+
+Some icons by [Yusuke Kamiyamane](http://p.yusukekamiyamane.com/). All rights reserved. Licensed under a [Creative Commons Attribution 3.0 License](href="http://creativecommons.org/licenses/by/3.0/).
+
 == Installation ==
 
 1. Upload `shortcodes-generator.zip` to the `/wp-content/plugins/` directory and unzip it
