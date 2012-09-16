@@ -28,7 +28,6 @@ License:
   
 */
 
-
 class Cur_Shortcodes_Generator{
 
 	var $shortcodes;
@@ -37,8 +36,6 @@ class Cur_Shortcodes_Generator{
 
 	function __construct() {
 	
-		$theme = wp_get_theme();
-
 		$shortcodes =& $this->get_shortcodes_array();
 		if ( $shortcodes ) {
 
@@ -89,8 +86,6 @@ class Cur_Shortcodes_Generator{
 	 */
 	function get_shortcodes_array(){
 
-		$theme = wp_get_theme();
-
 		// Load shortcodes from shortcodes/array.php file (if it exists)
 		$location = apply_filters( 'cur_shortcodes_array_location', '/shortcodes/array.php' );
 		$location_path = get_template_directory() . $location;
@@ -117,8 +112,6 @@ class Cur_Shortcodes_Generator{
 	 * @return void
 	 */
 	function get_shortcodes_functions(){
-
-		$theme = wp_get_theme();
 
 		// Load shortcodes from shortcodes/functions.php file (if it exists)
 		$location = apply_filters( 'cur_shortcodes_functions_location', '/shortcodes/functions.php' );
@@ -176,10 +169,10 @@ class Cur_Shortcodes_Generator{
 	 */
 	function shortcodes_button_css() {
 
-		$css_path = apply_filters('cur_shortcodes_css_location', 'shortcodes/shortcodes.css');
+		$css_path = apply_filters('cur_shortcodes_css_location', '/shortcodes/shortcodes.css');
 
-		if ( file_exists( $this->theme_path . $css_path ) ){ 
-			wp_enqueue_style( $this->slug . '_css', get_template_directory_uri() . '/' . $css_path );
+		if ( file_exists( get_template_directory() . $css_path ) ){ 
+			wp_enqueue_style( $this->slug . '_css', get_template_directory_uri() . $css_path );
 		} else {
 			wp_enqueue_style( 'cur_shortcodes_button_css', plugins_url('/assets/css/shortcodes.css', __FILE__ ) );
 		}
@@ -394,7 +387,7 @@ class Cur_Shortcodes_Generator{
 	function add_shortcode( $shortcode = '', $function = '', $tag = '' ){
 
 		if( empty( $function ) ){
-			add_simple_shortcode( $shortcode, $tag );
+			$this->add_simple_shortcode( $shortcode, $tag );
 		}	
 		
 		add_shortcode( $shortcode, $function );

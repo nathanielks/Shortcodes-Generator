@@ -2,7 +2,7 @@
 Contributors: fightthecurrent   
 Donate link: http://bit.ly/QhXuBc    
 Tags: shortcodes, theme, generator    
-Requires at least: 3.4.0   
+Requires at least: 3.0   
 Tested up to: 3.4.2    
 Stable tag: 1.0    
 
@@ -15,6 +15,8 @@ Now, you can add shortcodes and a button to the editor as simply as using an
 array and this plugin. [How neat is that?](http://bit.ly/Pvj4ie)
 
 To check out more details on how to use the plugin, please visit [the plugin site.](http://fightthecurrent.org/plugins/shortcodes-generator)
+
+Note: This plugin requires at LEAST PHP 5.3. If you're not sure what version of PHP you're using, consult your host.
 
 ## Credits ##
 
