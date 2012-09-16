@@ -53,7 +53,7 @@ class Cur_Shortcodes_Generator{
 			$this->shortcodes = $shortcodes;
 
 
-			$this->plugin_path = dirname( __FILE__ );
+			$this->plugin_path = plugin_dir_path( __FILE__ );
 
 			// Require related shortcodes functions, if they exist
 			$this->get_shortcodes_functions();
