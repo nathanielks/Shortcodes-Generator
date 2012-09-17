@@ -4,7 +4,7 @@ Donate link: http://bit.ly/QhXuBc
 Tags: shortcodes, theme, generator    
 Requires at least: 3.0   
 Tested up to: 3.4.2    
-Stable tag: 1.0    
+Stable tag: 1.0.1    
 
 A plugin to generate shortcodes and a corresponding button in the WordPress visual editor. Wicked!
 
