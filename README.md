@@ -109,5 +109,9 @@ do for now.
 
 ## Changelog ##
 
+### 1.0.1 ###
+* Fixed error where functions weren't being included.
+* Fixed issue where $tags wasn't being unset.
+
 ### 1.0 ###
 * Initial Release
