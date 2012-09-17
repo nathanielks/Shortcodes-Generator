@@ -117,8 +117,7 @@ class Cur_Shortcodes_Generator{
 		$location = apply_filters( 'cur_shortcodes_functions_location', '/shortcodes/functions.php' );
 		$location_path = get_template_directory() . $location;
 
-		if ( file_exists( $location ) ) {
-
+		if ( file_exists( $location_path ) ) {
 			require_once $location_path;
 
 		}
@@ -270,20 +269,22 @@ class Cur_Shortcodes_Generator{
 	 * @access public
 	 * @return void
 	 */
-	function parse_shortcodes( $shortcodes, $isChildren = 0, $isSelectable = 0, $tag = '' ){
+	function parse_shortcodes( $shortcodes, $isChildren = 0, $isSelectable = 0, $tag = null ){
 
 		$output = '';
 
 		foreach ( $shortcodes as $sc ){
 
+			
 			if ( !is_array( $sc ) && !$isChildren ){
 				continue;
 			} elseif ( $isChildren && !is_array( $sc ) ){
 				$title = $sc;	
 			} else{
+				unset($tag);
 				extract( $sc );
 			}
-			$tag = ( isset( $tag ) ) ? $tag : '';
+
 			$function = ( isset( $function ) ) ? $function : '';
 			$selectable = ( isset( $isSelectable ) ) ? 1 : ( isset( $selectable ) ) ? 1 : 0;
 			$shortcode = ( !empty( $shortcode ) ) ? $shortcode : $sc;
@@ -325,6 +326,8 @@ class Cur_Shortcodes_Generator{
 					}
 			
 					unset( $shortcode );
+					//unset( $tag );
+					unset( $function );
 
 				}
 
@@ -384,12 +387,15 @@ class Cur_Shortcodes_Generator{
 	 * @access public
 	 * @return void
 	 */
-	function add_shortcode( $shortcode = '', $function = '', $tag = '' ){
+	function add_shortcode( $shortcode = '', $function = '', $tag = null ){
+
+		$tag = ( $tag != null ) ? $tag : 'div';
 
 		if( empty( $function ) ){
 			$this->add_simple_shortcode( $shortcode, $tag );
+			return;
 		}	
-		
+
 		add_shortcode( $shortcode, $function );
 			
 	}
@@ -404,8 +410,6 @@ class Cur_Shortcodes_Generator{
 	 * @return void
 	 */
 	function add_simple_shortcode( $shortcode, $tag ){
-
-		$tag = ( isset( $tag ) ) ? $tag : 'div';
 
 		$sc = function( $atts, $content = null ) use ( $shortcode, $tag ){
 			return '<' . $tag . ' class="' . $shortcode . '">' . do_shortcode($content) . '</' . $tag . '>';
