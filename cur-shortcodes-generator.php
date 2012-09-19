@@ -287,6 +287,7 @@ class Cur_Shortcodes_Generator{
 				continue;
 			} elseif ( $isChildren && !is_array( $sc ) ){
 				unset( $shortcode );
+				unset( $function );
 				$title = $sc;	
 			} else{
 				unset($tag);
