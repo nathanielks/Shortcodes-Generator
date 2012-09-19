@@ -32,7 +32,6 @@ $shortcodes['name'] = array(
  
  */
 
-
 $shortcodes['color'] = array(
 	'shortcode'	=> 'color',
 	'selectable' => 1,

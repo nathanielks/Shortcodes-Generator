@@ -33,10 +33,13 @@ class Cur_Shortcodes_Generator{
 	var $shortcodes;
 	var $generate_output = false;
 	var $plugin_path;
+	var $in;
+	var $out;
 
 	function __construct() {
 	
 		$shortcodes =& $this->get_shortcodes_array();
+
 		if ( $shortcodes ) {
 
 			if( !isset( $shortcodes['title'] ) ){
@@ -89,6 +92,8 @@ class Cur_Shortcodes_Generator{
 		// Load shortcodes from shortcodes/array.php file (if it exists)
 		$location = apply_filters( 'cur_shortcodes_array_location', '/shortcodes/array.php' );
 		$location_path = get_template_directory() . $location;
+
+		$this->in = $location_path;
 
 		if ( file_exists( $location_path ) ) {
 
@@ -213,6 +218,7 @@ class Cur_Shortcodes_Generator{
 	 * @return array
 	 */
 	function add_shortcode_tinymce_plugin($plugin_array) {
+
 		$plugin_array[ $this->shortcodes['title'] ] = plugins_url( '/assets/js/editor_plugin.js', __FILE__ );
 		return $plugin_array;
 	}
@@ -240,18 +246,19 @@ class Cur_Shortcodes_Generator{
 	 * @access public
 	 * @return void
 	 */
-	function generate_shortcodes( $out, $shortcodes ){
+	function generate_shortcodes(){
 
-		$editor_plugin_path = $this->plugins_path . '/assets/js/editor_plugin.js';
+		$editor_plugin_path = $this->plugin_path . '/assets/js/editor_plugin.js';
 
-		if (!is_file($editor_plugin_path) || filemtime($in) > filemtime($out)) {
+		if (!is_file($editor_plugin_path) || filemtime($this->in) > filemtime($editor_plugin_path)) {
+
 			$this->generate_output = true;
 		}
 
 		$data = $this->parse_shortcodes( $this->shortcodes );
 
 		if ( $data ){
-			$this->compile( $data, $out );
+			$this->compile( $data, $editor_plugin_path );
 		}
 
 	}
@@ -269,7 +276,7 @@ class Cur_Shortcodes_Generator{
 	 * @access public
 	 * @return void
 	 */
-	function parse_shortcodes( $shortcodes, $isChildren = 0, $isSelectable = 0, $tag = null ){
+	function parse_shortcodes( $shortcodes, $isChildren = 0, $isSelectable = 0, $tag = '' ){
 
 		$output = '';
 
@@ -279,6 +286,7 @@ class Cur_Shortcodes_Generator{
 			if ( !is_array( $sc ) && !$isChildren ){
 				continue;
 			} elseif ( $isChildren && !is_array( $sc ) ){
+				unset( $shortcode );
 				$title = $sc;	
 			} else{
 				unset($tag);
@@ -289,7 +297,8 @@ class Cur_Shortcodes_Generator{
 			$selectable = ( isset( $isSelectable ) ) ? 1 : ( isset( $selectable ) ) ? 1 : 0;
 			$shortcode = ( !empty( $shortcode ) ) ? $shortcode : $sc;
 			$title = ucwords( preg_replace( '[-_]', ' ', $shortcode ) );	
-
+			$tag = ( !empty( $tag ) ) ? $tag : '';
+var_dump($shortcode);
 			if ( isset( $children ) && is_array( $children ) ){
 
 				if( !$this->generate_output ){
@@ -305,7 +314,6 @@ class Cur_Shortcodes_Generator{
 				unset( $children );
 
 			} else {
-
 				$this->add_shortcode( $shortcode, $function, $tag );
 
 				if( $this->generate_output ){
