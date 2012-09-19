@@ -299,7 +299,7 @@ class Cur_Shortcodes_Generator{
 			$shortcode = ( !empty( $shortcode ) ) ? $shortcode : $sc;
 			$title = ucwords( preg_replace( '[-_]', ' ', $shortcode ) );	
 			$tag = ( !empty( $tag ) ) ? $tag : '';
-var_dump($shortcode);
+
 			if ( isset( $children ) && is_array( $children ) ){
 
 				if( !$this->generate_output ){
