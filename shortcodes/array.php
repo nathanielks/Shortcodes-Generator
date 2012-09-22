@@ -1,5 +1,9 @@
 <?php
 
+/*
+ *You can change these to whatever you want, but be sure you still include them
+ */
+
 $shortcodes = array(
 	'title' => 'CurShortcodes',
 	'slug' => 'cur_shortcodes_button'
