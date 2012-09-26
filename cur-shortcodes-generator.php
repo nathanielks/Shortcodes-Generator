@@ -64,10 +64,11 @@ class Cur_Shortcodes_Generator{
 			add_filter( 'tiny_mce_version', array( &$this, 'refresh_mce' ) );
 			add_action( 'admin_print_styles', array( &$this, 'shortcodes_button_css' ) );
 
-			add_action( 'init', array( &$this, 'generate_shortcodes' ) );
-
 			// Require related shortcodes functions, if they exist
 			add_action( 'init', array( &$this, 'get_shortcodes_functions' ) );
+
+			add_action( 'init', array( &$this, 'generate_shortcodes' ) );
+
 	
 		}
 		else {
