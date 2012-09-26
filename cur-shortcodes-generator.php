@@ -4,7 +4,7 @@
 Plugin Name: Shortcodes Generator
 Plugin URI: http://fightthecurrent.org/plugins/shortcodes-generator
 Description: A plugin to generate shortcodes and a corresponding button in the WordPress visual editor. Wicked!
-Version: 1.0
+Version: 1.1
 Author: Nathaniel Schweinberg
 Author URI: http://fightthecurrent.org
 Author Email: nathaniel@fightthecurrent.org
@@ -35,6 +35,7 @@ class Cur_Shortcodes_Generator{
 	var $plugin_path;
 	var $in;
 	var $out;
+	var $editor_plugin_path;
 
 	function __construct() {
 	
@@ -50,11 +51,8 @@ class Cur_Shortcodes_Generator{
 			}
 			$this->shortcodes = $shortcodes;
 
-
 			$this->plugin_path = plugin_dir_path( __FILE__ );
 
-			// Require related shortcodes functions, if they exist
-			$this->get_shortcodes_functions();
 
 			/**
 			 * Shortcode buttons
@@ -67,6 +65,9 @@ class Cur_Shortcodes_Generator{
 			add_action( 'admin_print_styles', array( &$this, 'shortcodes_button_css' ) );
 
 			add_action( 'init', array( &$this, 'generate_shortcodes' ) );
+
+			// Require related shortcodes functions, if they exist
+			add_action( 'init', array( &$this, 'get_shortcodes_functions' ) );
 	
 		}
 		else {
@@ -219,7 +220,10 @@ class Cur_Shortcodes_Generator{
 	 */
 	function add_shortcode_tinymce_plugin($plugin_array) {
 
-		$plugin_array[ $this->shortcodes['title'] ] = plugins_url( '/assets/js/editor_plugin.js', __FILE__ );
+		$location = apply_filters( 'cur_shortcodes_editor_plugin_location', '/shortcodes/editor_plugin.js' );
+		$location_path = get_template_directory_uri() . $location;
+
+		$plugin_array[ $this->shortcodes['title'] ] = $location_path;
 		return $plugin_array;
 	}
 
@@ -248,9 +252,10 @@ class Cur_Shortcodes_Generator{
 	 */
 	function generate_shortcodes(){
 
-		$editor_plugin_path = $this->plugin_path . '/assets/js/editor_plugin.js';
+		$location = apply_filters( 'cur_shortcodes_editor_plugin_location', '/shortcodes/editor_plugin.js' );
+		$editor_plugin = get_template_directory() . $location;
 
-		if (!is_file($editor_plugin_path) || filemtime($this->in) > filemtime($editor_plugin_path)) {
+		if (!is_file($editor_plugin) || filemtime($this->in) > filemtime($editor_plugin)) {
 
 			$this->generate_output = true;
 		}
@@ -258,7 +263,7 @@ class Cur_Shortcodes_Generator{
 		$data = $this->parse_shortcodes( $this->shortcodes );
 
 		if ( $data ){
-			$this->compile( $data, $editor_plugin_path );
+			$this->compile( $data, $editor_plugin );
 		}
 
 	}

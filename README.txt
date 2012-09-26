@@ -1,10 +1,10 @@
 === Shortcodes Generator ===
 Contributors: fightthecurrent   
 Donate link: http://bit.ly/QhXuBc    
-Tags: shortcodes, theme, generator    
+Tags: shortcodes, theme, generator, develop     
 Requires at least: 3.0   
 Tested up to: 3.4.2    
-Stable tag: 1.0.2    
+Stable tag: 1.1    
 
 A plugin to generate shortcodes and a corresponding button in the WordPress visual editor. Wicked!
 
@@ -105,9 +105,12 @@ Want to be able to select text and have the shortcode wrap around it? Just pass
 
 I will eventually add a ThickBox dialogue so that people can have default
 selections picked out for them, and actually have more of a UI. But this will
-d
+do for now.
 
 == Changelog ==
+
+= 1.1 = 
+* editor_plugin.js is now stored in the theme's shortcodes directory.
 
 = 1.0.2 =
 * Fixed error where child shortcodes weren't being generated correctly.
