@@ -178,7 +178,7 @@ class Cur_Shortcodes_Generator{
 		$css_path = apply_filters('cur_shortcodes_css_location', '/shortcodes/shortcodes.css');
 
 		if ( file_exists( get_template_directory() . $css_path ) ){ 
-			wp_enqueue_style( $this->slug . '_css', get_template_directory_uri() . $css_path );
+			wp_enqueue_style( 'cur_shortcodes_button_css', get_template_directory_uri() . $css_path );
 		} else {
 			wp_enqueue_style( 'cur_shortcodes_button_css', plugins_url('/assets/css/shortcodes.css', __FILE__ ) );
 		}
