@@ -28,6 +28,8 @@ License:
   
 */
 
+add_action( 'plugins_loaded', array( 'Cur_Shortcodes_Generator', 'get_instance' ) );
+
 class Cur_Shortcodes_Generator{
 
 	var $shortcodes;
@@ -36,6 +38,7 @@ class Cur_Shortcodes_Generator{
 	var $in;
 	var $out;
 	var $editor_plugin_path;
+	protected static $instance = null;
 
 	function __construct() {
 	
@@ -78,6 +81,16 @@ class Cur_Shortcodes_Generator{
 		}
 
 	}
+
+    public static function get_instance() {
+
+        // If the single instance hasn't been set, set it now.
+        if ( null == self::$instance ) {
+            self::$instance = new self;
+        }
+
+        return self::$instance;
+    }
 
 	/**
 	 * Searches for shortcodes/array.php in the active theme's directory. If it 
@@ -509,5 +522,3 @@ $file_end = '
 
 	}
 }
-
-new Cur_Shortcodes_Generator();
