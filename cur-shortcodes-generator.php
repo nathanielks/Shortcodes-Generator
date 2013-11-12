@@ -332,12 +332,12 @@ class Cur_Shortcodes_Generator{
 						$scope = 'c';
 						$prefix = "\t";
 					}
-					$params = ( isset( $params ) && is_array( $params ) ) ? $this->parse_parameters( $params ) : '';
+					$atts = ( isset( $atts ) && is_array( $atts ) ) ? $this->parse_parameters( $atts ) : '';
 
 					if ( $selectable ){
-						$output .= $prefix . 'a.addSelectable(' . $scope . ', \'' .$title. '\' , \'[' .$shortcode . $params. ']\', \'[/' .$shortcode. ']\');' . "\n";
+						$output .= $prefix . 'a.addSelectable(' . $scope . ', \'' .$title. '\' , \'[' .$shortcode . $atts. ']\', \'[/' .$shortcode. ']\');' . "\n";
 					} else {
-						$output .= $prefix . 'a.addImmediate(' . $scope . ', "' .$title. '" , "[' .$shortcode . $params. ']");' . "\n";
+						$output .= $prefix . 'a.addImmediate(' . $scope . ', "' .$title. '" , "[' .$shortcode . $atts. ']");' . "\n";
 					}
 			
 					unset( $shortcode );
@@ -355,23 +355,23 @@ class Cur_Shortcodes_Generator{
 	}
 	
 	/**
-	 * Parses the shortcode parameters. If $params is an associative array, it 
+	 * Parses the shortcode attributes. If $atts is an associative array, it 
 	 * will add the default values defined to the shortcode output. If it's an 
 	 * indexed array, it just adds the param key with an empty value. 
 	 * 
-	 * @param array $params 
+	 * @param array $atts 
 	 * @access public
 	 * @return void
 	 */
-	function parse_parameters( $params ){
+	function parse_attributes( $atts ){
 
 		$output = '';
-		if ( $this->is_assoc( $params ) ){
-			foreach( $params as $k => $v ){
+		if ( $this->is_assoc( $atts ) ){
+			foreach( $atts as $k => $v ){
 				$output .= ' ' . $k . '="' .$v. '"';
 			}
 		} else {
-			foreach( $params as $p ){
+			foreach( $atts as $p ){
 				$output .= ' ' . $p . '=""';
 			}
 
