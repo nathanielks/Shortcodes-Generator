@@ -316,7 +316,7 @@ class Cur_Shortcodes_Generator{
 			$function = ( isset( $function ) ) ? $function : '';
 			$selectable = ( isset( $isSelectable ) ) ? 1 : ( isset( $selectable ) ) ? 1 : 0;
 			$shortcode = ( !empty( $shortcode ) ) ? $shortcode : $sc;
-			$title = ucwords( preg_replace( '[-_]', ' ', $shortcode ) );	
+			$title = ucwords( preg_replace( '/[^\w-]/', ' ', $shortcode ) );	
 			$tag = ( !empty( $tag ) ) ? $tag : '';
 
 			if ( isset( $children ) && is_array( $children ) ){
@@ -345,7 +345,7 @@ class Cur_Shortcodes_Generator{
 						$scope = 'c';
 						$prefix = "\t";
 					}
-					$atts = ( isset( $atts ) && is_array( $atts ) ) ? $this->parse_parameters( $atts ) : '';
+					$atts = ( isset( $atts ) && is_array( $atts ) ) ? $this->parse_attributes( $atts ) : '';
 
 					if ( $selectable ){
 						$output .= $prefix . 'a.addSelectable(' . $scope . ', \'' .$title. '\' , \'[' .$shortcode . $atts. ']\', \'[/' .$shortcode. ']\');' . "\n";
@@ -523,10 +523,24 @@ $file_end = '
 	}
 }
 
-function cur_shortcode_atts( $atts, $shortcode_slug ){
+function cur_shortcode_atts( $shortcode_slug, $atts ){
 	$csg = Cur_Shortcodes_Generator::get_instance();
-	$shortcode_atts = $csg->shortcodes[ $shortcode_slug ]['atts'];
-	if( ! empty( $shortcode_atts ) && is_array( $shortcodes_atts ) )
-		return shortcode_atts( $atts, $shortcode_atts );
+	if( is_array( $shortcode_slug ) ){
+		$default_pairs = $csg->shortcodes[ $shortcode_slug['parent'] ]['children'][ $shortcode_slug['child'] ]['atts'];
+	} else {
+		$default_pairs = $csg->shortcodes[ $shortcode_slug ]['atts'];
+	}
+	if( ! empty( $default_pairs ) && is_array( $default_pairs ) )
+		return shortcode_atts( $default_pairs, $atts );
 	return false;
+}
+
+
+/*
+ *Thanks JapanPro & forsvarir
+ *http://stackoverflow.com/questions/3809108/how-to-remove-empty-paragraph-tags-from-string
+ */
+function cur_remove_empty_tags( $content ){
+	$pattern = "/<[^\/>]*>([\s]?)*<\/[^>]*>/";
+	return preg_replace($pattern, '', $content); 
 }
