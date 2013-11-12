@@ -1,13 +1,9 @@
 <?php
 
 function cur_color_block( $atts, $content = null ) {
-	extract( shortcode_atts( array(
-		'class' => '',
-		'size' => '',
-		'title' => '',
-		'color' => '',
-		'headline_size' => '',
-		'headline_class' => ''
+	extract( cur_shortcode_atts( array(
+		'parent' => 'color-block',
+		'child' => 'color-block'
 	), $atts ) );
 	$output = '<div class="color-block '. $class . ' ' . $size . '">';
 	$output .= ( $title ) ? '<h2 class="headline ' . $color . ' bg ' . $headline_size . ' ' . $headline_class . '">' . $title . '</h2>' : '';
@@ -19,10 +15,9 @@ function cur_color_block( $atts, $content = null ) {
 }
 
 function cur_color_block_headline( $atts, $content = null ) {
-	extract( shortcode_atts( array(
-		'color' => '',
-		'size' => '',
-		'class' => '',
+	extract( cur_shortcode_atts( array(
+		'parent' => 'color-block',
+		'child' => 'headline'
 	), $atts ) );
 
 	$output = '<h2 class="headline ' . $color . ' bg ' . $size . ' ' . $class . '">';
@@ -41,12 +36,9 @@ function cur_color_block_footer( $atts, $content = null ) {
 }
 
 function cur_button( $atts, $content = null ) {
-	extract( shortcode_atts( array(
-		'link' => '',
-		'color' => '',
-		'size' => '',
-		'class' => '',
-	), $atts ) );
+	extract( cur_shortcode_atts(
+	'button'
+	, $atts ) );
 	return '<a href="' . addhttp( $link ) . '" class="button ' . $color . ' ' . $size . ' ' . $class . '">' . do_shortcode($content) . '</a>';
 }
 
