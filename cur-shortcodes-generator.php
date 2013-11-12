@@ -522,3 +522,11 @@ $file_end = '
 
 	}
 }
+
+function cur_shortcode_atts( $atts, $shortcode_slug ){
+	$csg = Cur_Shortcodes_Generator::get_instance();
+	$shortcode_atts = $csg->shortcodes[ $shortcode_slug ]['atts'];
+	if( ! empty( $shortcode_atts ) && is_array( $shortcodes_atts ) )
+		return shortcode_atts( $atts, $shortcode_atts );
+	return false;
+}
