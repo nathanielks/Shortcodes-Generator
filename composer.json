@@ -4,6 +4,10 @@
   "minimum-stability": "dev",
   "description": "A plugin to generate shortcodes and a corresponding button in the WordPress visual editor. Wicked!",
   "license": "GPL-2.0+",
+  {
+    "type": "vcs",
+    "url": "https://github.com/nathanielks/Shortcodes-Generator.git"
+  },
   "require": {
     "composer/installers": "v1.0.6"
   }
