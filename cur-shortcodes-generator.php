@@ -4,7 +4,7 @@
 Plugin Name: Shortcodes Generator
 Plugin URI: http://fightthecurrent.org/plugins/shortcodes-generator
 Description: A plugin to generate shortcodes and a corresponding button in the WordPress visual editor. Wicked!
-Version: 1.1
+Version: 1.2
 Author: Nathaniel Schweinberg
 Author URI: http://fightthecurrent.org
 Author Email: nathaniel@fightthecurrent.org
@@ -28,6 +28,8 @@ License:
   
 */
 
+add_action( 'plugins_loaded', array( 'Cur_Shortcodes_Generator', 'get_instance' ) );
+
 class Cur_Shortcodes_Generator{
 
 	var $shortcodes;
@@ -36,6 +38,7 @@ class Cur_Shortcodes_Generator{
 	var $in;
 	var $out;
 	var $editor_plugin_path;
+	protected static $instance = null;
 
 	function __construct() {
 	
@@ -78,6 +81,16 @@ class Cur_Shortcodes_Generator{
 		}
 
 	}
+
+    public static function get_instance() {
+
+        // If the single instance hasn't been set, set it now.
+        if ( null == self::$instance ) {
+            self::$instance = new self;
+        }
+
+        return self::$instance;
+    }
 
 	/**
 	 * Searches for shortcodes/array.php in the active theme's directory. If it 
@@ -178,7 +191,7 @@ class Cur_Shortcodes_Generator{
 		$css_path = apply_filters('cur_shortcodes_css_location', '/shortcodes/shortcodes.css');
 
 		if ( file_exists( get_template_directory() . $css_path ) ){ 
-			wp_enqueue_style( $this->slug . '_css', get_template_directory_uri() . $css_path );
+			wp_enqueue_style( 'cur_shortcodes_button_css', get_template_directory_uri() . $css_path );
 		} else {
 			wp_enqueue_style( 'cur_shortcodes_button_css', plugins_url('/assets/css/shortcodes.css', __FILE__ ) );
 		}
@@ -303,7 +316,7 @@ class Cur_Shortcodes_Generator{
 			$function = ( isset( $function ) ) ? $function : '';
 			$selectable = ( isset( $isSelectable ) ) ? 1 : ( isset( $selectable ) ) ? 1 : 0;
 			$shortcode = ( !empty( $shortcode ) ) ? $shortcode : $sc;
-			$title = ucwords( preg_replace( '[-_]', ' ', $shortcode ) );	
+			$title = ucwords( preg_replace( '/[^\w-]/', ' ', $shortcode ) );	
 			$tag = ( !empty( $tag ) ) ? $tag : '';
 
 			if ( isset( $children ) && is_array( $children ) ){
@@ -332,12 +345,12 @@ class Cur_Shortcodes_Generator{
 						$scope = 'c';
 						$prefix = "\t";
 					}
-					$params = ( isset( $params ) && is_array( $params ) ) ? $this->parse_parameters( $params ) : '';
+					$atts = ( isset( $atts ) && is_array( $atts ) ) ? $this->parse_attributes( $atts ) : '';
 
 					if ( $selectable ){
-						$output .= $prefix . 'a.addSelectable(' . $scope . ', \'' .$title. '\' , \'[' .$shortcode . $params. ']\', \'[/' .$shortcode. ']\');' . "\n";
+						$output .= $prefix . 'a.addSelectable(' . $scope . ', \'' .$title. '\' , \'[' .$shortcode . $atts. ']\', \'[/' .$shortcode. ']\');' . "\n";
 					} else {
-						$output .= $prefix . 'a.addImmediate(' . $scope . ', "' .$title. '" , "[' .$shortcode . $params. ']");' . "\n";
+						$output .= $prefix . 'a.addImmediate(' . $scope . ', "' .$title. '" , "[' .$shortcode . $atts. ']");' . "\n";
 					}
 			
 					unset( $shortcode );
@@ -355,23 +368,23 @@ class Cur_Shortcodes_Generator{
 	}
 	
 	/**
-	 * Parses the shortcode parameters. If $params is an associative array, it 
+	 * Parses the shortcode attributes. If $atts is an associative array, it 
 	 * will add the default values defined to the shortcode output. If it's an 
 	 * indexed array, it just adds the param key with an empty value. 
 	 * 
-	 * @param array $params 
+	 * @param array $atts 
 	 * @access public
 	 * @return void
 	 */
-	function parse_parameters( $params ){
+	function parse_attributes( $atts ){
 
 		$output = '';
-		if ( $this->is_assoc( $params ) ){
-			foreach( $params as $k => $v ){
+		if ( $this->is_assoc( $atts ) ){
+			foreach( $atts as $k => $v ){
 				$output .= ' ' . $k . '="' .$v. '"';
 			}
 		} else {
-			foreach( $params as $p ){
+			foreach( $atts as $p ){
 				$output .= ' ' . $p . '=""';
 			}
 
@@ -510,4 +523,24 @@ $file_end = '
 	}
 }
 
-new Cur_Shortcodes_Generator();
+function cur_shortcode_atts( $shortcode_slug, $atts ){
+	$csg = Cur_Shortcodes_Generator::get_instance();
+	if( is_array( $shortcode_slug ) ){
+		$default_pairs = $csg->shortcodes[ $shortcode_slug['parent'] ]['children'][ $shortcode_slug['child'] ]['atts'];
+	} else {
+		$default_pairs = $csg->shortcodes[ $shortcode_slug ]['atts'];
+	}
+	if( ! empty( $default_pairs ) && is_array( $default_pairs ) )
+		return shortcode_atts( $default_pairs, $atts );
+	return false;
+}
+
+
+/*
+ *Thanks JapanPro & forsvarir
+ *http://stackoverflow.com/questions/3809108/how-to-remove-empty-paragraph-tags-from-string
+ */
+function cur_remove_empty_tags( $content ){
+	$pattern = "/<[^\/>]*>([\s]?)*<\/[^>]*>/";
+	return preg_replace($pattern, '', $content); 
+}

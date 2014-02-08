@@ -3,8 +3,8 @@ Contributors: fightthecurrent
 Donate link: http://bit.ly/QhXuBc    
 Tags: shortcodes, theme, generator, develop     
 Requires at least: 3.0   
-Tested up to: 3.4.2    
-Stable tag: 1.1.1     
+Tested up to: 3.7.1    
+Stable tag: 1.2     
 
 A plugin to generate shortcodes and a corresponding button in the WordPress visual editor. Wicked!
 
@@ -53,7 +53,7 @@ The template is as follows:
 		'function' => '',
 		'tag'	=> '',
 		'selectable' => 0
-		'params' => array(
+		'atts' => array(
 			'name', 'name2'
 		),
 		'children'=> array(
@@ -62,7 +62,7 @@ The template is as follows:
 				'function' => '',
 				'tag'	=> '',
 				'selectable' => 0
-				'params' => array(
+				'atts' => array(
 				      'name', 'name2'
 				),
 			),
@@ -79,7 +79,7 @@ an example:
 		'shortcode' => 'button',  
 		'function' => 'cur_button_shortcode',  
 		'selectable' => 1  
-		'params' => array(  
+		'atts' => array(  
 			'class', 'color'  
 		),  
 	);  
@@ -89,9 +89,9 @@ the shortcode. The shortcode will look like this:
 
 	[button class="" color""][/button]
 
-If you want to define some default parameters, just change params to this:
+If you want to define some default parameters, just change atts to this:
 
-	'params' => array(
+	'atts' => array(
 		'class' => 'small',
 		'color' => 'green'
 	)
@@ -108,6 +108,12 @@ selections picked out for them, and actually have more of a UI. But this will
 do for now.
 
 == Changelog ==
+
+= 1.2 = 
+* BREAKING CHANGE: Changed params to atts in shortcode definition array
+* Added cur_shortcode_atts so as to reduce repitition of shortcode attribute definitions. There was too much repition across array.php and functions.php
+* Updated plugin to singleton pattern. Use Cur_Shortcodes_Generator::get_instance() to retreive instance of the class.
+* Updated example array and functions
 
 = 1.1.1 = 
 * fixed error where functions weren't required in the correct order

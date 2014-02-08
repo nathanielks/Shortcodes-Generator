@@ -18,7 +18,7 @@ $shortcodes['name'] = array(
 	'function' => '',
 	'tag'	=> '',
 	'selectable' => 0
-	'params' => array(
+	'atts' => array(
 		'name', 'name2'
 	),
 	'children'=> array(
@@ -27,7 +27,7 @@ $shortcodes['name'] = array(
 			'function' => '',
 			'tag'	=> '',
 			'selectable' => 0
-			'params' => array(
+			'atts' => array(
 				'name', 'name2'
 			),
 		),
@@ -68,7 +68,7 @@ $shortcodes['color-block'] = array(
 			'shortcode'	=> 'color-block',
 			'function' => 'cur_color_block',
 			'selectable' => 1,
-			'params' => array(
+			'atts' => array(
 				'class' => '',
 				'size' => '',
 				'shortcode' => '',
@@ -82,7 +82,7 @@ $shortcodes['color-block'] = array(
 			'shortcode'	=> 'headline',
 			'function' => 'cur_color_block_headline',
 			'selectable' => 1,
-			'params' => array(
+			'atts' => array(
 				'color' => '',
 				'size' => '',
 				'class' => '',
@@ -107,7 +107,7 @@ $shortcodes['button'] = array(
 	'shortcode'	=> 'button',
 	'function' => 'cur_button',
 	'selectable' => 1,
-	'params' => array(
+	'atts' => array(
 		'link' => '',
 		'color' => '',
 		'size' => '',
