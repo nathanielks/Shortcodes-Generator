@@ -1,6 +1,7 @@
 {
   "name": "nathanielks/shortcodes-generator",
   "type": "wordpress-plugin",
+  "minimum-stability": "dev",
   "require": {
     "composer/installers": "v1.0.6"
   }
