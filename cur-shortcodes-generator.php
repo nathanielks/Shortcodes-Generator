@@ -14,7 +14,7 @@ License:
   Copyright 2012 Nathaniel Schweinberg (nathaniel@fightthecurrent.org)
 
   This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License, version 2, as 
+  it under the terms of the GNU General Public License, version 2, as
   published by the Free Software Foundation.
 
   This program is distributed in the hope that it will be useful,
@@ -25,8 +25,11 @@ License:
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-  
+
 */
+
+if( ! defined( 'CSG_URI' ) )
+	define( 'CSG_URI', plugin_dir_url( __FILE__ ) );
 
 add_action( 'plugins_loaded', array( 'Cur_Shortcodes_Generator', 'get_instance' ) );
 
@@ -41,7 +44,7 @@ class Cur_Shortcodes_Generator{
 	protected static $instance = null;
 
 	function __construct() {
-	
+
 		$shortcodes =& $this->get_shortcodes_array();
 
 		if ( $shortcodes ) {
@@ -72,7 +75,7 @@ class Cur_Shortcodes_Generator{
 
 			add_action( 'init', array( &$this, 'generate_shortcodes' ) );
 
-	
+
 		}
 		else {
 			// Display a notice if options aren't present in the theme
@@ -93,11 +96,11 @@ class Cur_Shortcodes_Generator{
     }
 
 	/**
-	 * Searches for shortcodes/array.php in the active theme's directory. If it 
-	 * can't find it, it defaults to the cur_shortcodes_generator_shortcodes() 
-	 * function, in case the theme uses the function instead of the files. If 
+	 * Searches for shortcodes/array.php in the active theme's directory. If it
+	 * can't find it, it defaults to the cur_shortcodes_generator_shortcodes()
+	 * function, in case the theme uses the function instead of the files. If
 	 * it can't find that, it returns false.
-	 * 
+	 *
 	 * @access public
 	 * @return $shortcodes
 	 * @return false
@@ -125,9 +128,9 @@ class Cur_Shortcodes_Generator{
 	}
 
 	/**
-	 * Searches for shortcodes/functions.php in the active theme's directory 
+	 * Searches for shortcodes/functions.php in the active theme's directory
 	 * and requires it if it exists.
-	 * 
+	 *
 	 * @access public
 	 * @return void
 	 */
@@ -145,9 +148,9 @@ class Cur_Shortcodes_Generator{
 	}
 
 	/**
-	 * Displays a notice if the active theme doesn't have an array.php file or 
+	 * Displays a notice if the active theme doesn't have an array.php file or
 	 * cur_shortcodes_generator_shortcodes function.
-	 * 
+	 *
 	 * @access public
 	 * @return void
 	 */
@@ -166,9 +169,9 @@ class Cur_Shortcodes_Generator{
 	}
 
 	/**
-	 * Adds user meta if the current user toggled "Hide Notice" in 
+	 * Adds user meta if the current user toggled "Hide Notice" in
 	 * admin_notice()
-	 * 
+	 *
 	 * @access public
 	 * @return void
 	 */
@@ -190,10 +193,10 @@ class Cur_Shortcodes_Generator{
 
 		$css_path = apply_filters('cur_shortcodes_css_location', '/shortcodes/shortcodes.css');
 
-		if ( file_exists( get_template_directory() . $css_path ) ){ 
+		if ( file_exists( get_template_directory() . $css_path ) ){
 			wp_enqueue_style( 'cur_shortcodes_button_css', get_template_directory_uri() . $css_path );
 		} else {
-			wp_enqueue_style( 'cur_shortcodes_button_css', plugins_url('/assets/css/shortcodes.css', __FILE__ ) );
+			wp_enqueue_style( 'cur_shortcodes_button_css',  CSG_URI . 'assets/css/shortcodes.css' );
 		}
 	}
 
@@ -256,11 +259,11 @@ class Cur_Shortcodes_Generator{
 
 
 	/**
-	 * Takes two variables: $out and $shortcodes. $out is the path of 
-	 * editor_plugin.js. $shortcodes is the array of shortcodes to parse. 
-	 * 
-	 * @param string $out 
-	 * @param array $shortcodes 
+	 * Takes two variables: $out and $shortcodes. $out is the path of
+	 * editor_plugin.js. $shortcodes is the array of shortcodes to parse.
+	 *
+	 * @param string $out
+	 * @param array $shortcodes
 	 * @access public
 	 * @return void
 	 */
@@ -283,15 +286,15 @@ class Cur_Shortcodes_Generator{
 	}
 
 	/**
-	 * Iterates over the shortcodes array adding the shortcodes via anonymous 
-	 * functions or a function that's been defined by the user. If 
-	 * $this->generate_output is true, it also generates the output to write to 
+	 * Iterates over the shortcodes array adding the shortcodes via anonymous
+	 * functions or a function that's been defined by the user. If
+	 * $this->generate_output is true, it also generates the output to write to
 	 * editor_plugin.js
-	 * 
-	 * @param array $shortcodes 
-	 * @param int $isChildren 
-	 * @param int $isSelectable 
-	 * @param string $tag 
+	 *
+	 * @param array $shortcodes
+	 * @param int $isChildren
+	 * @param int $isSelectable
+	 * @param string $tag
 	 * @access public
 	 * @return void
 	 */
@@ -301,13 +304,13 @@ class Cur_Shortcodes_Generator{
 
 		foreach ( $shortcodes as $sc ){
 
-			
+
 			if ( !is_array( $sc ) && !$isChildren ){
 				continue;
 			} elseif ( $isChildren && !is_array( $sc ) ){
 				unset( $shortcode );
 				unset( $function );
-				$title = $sc;	
+				$title = $sc;
 			} else{
 				unset($tag);
 				extract( $sc );
@@ -316,7 +319,7 @@ class Cur_Shortcodes_Generator{
 			$function = ( isset( $function ) ) ? $function : '';
 			$selectable = ( isset( $isSelectable ) ) ? 1 : ( isset( $selectable ) ) ? 1 : 0;
 			$shortcode = ( !empty( $shortcode ) ) ? $shortcode : $sc;
-			$title = ucwords( preg_replace( '/[^\w-]/', ' ', $shortcode ) );	
+			$title = ucwords( preg_replace( '/[^\w-]/', ' ', $shortcode ) );
 			$tag = ( !empty( $tag ) ) ? $tag : '';
 
 			if ( isset( $children ) && is_array( $children ) ){
@@ -352,7 +355,7 @@ class Cur_Shortcodes_Generator{
 					} else {
 						$output .= $prefix . 'a.addImmediate(' . $scope . ', "' .$title. '" , "[' .$shortcode . $atts. ']");' . "\n";
 					}
-			
+
 					unset( $shortcode );
 					//unset( $tag );
 					unset( $function );
@@ -360,19 +363,19 @@ class Cur_Shortcodes_Generator{
 				}
 
 			}
-				
+
 		}
 
 		return $output;
 
 	}
-	
+
 	/**
-	 * Parses the shortcode attributes. If $atts is an associative array, it 
-	 * will add the default values defined to the shortcode output. If it's an 
-	 * indexed array, it just adds the param key with an empty value. 
-	 * 
-	 * @param array $atts 
+	 * Parses the shortcode attributes. If $atts is an associative array, it
+	 * will add the default values defined to the shortcode output. If it's an
+	 * indexed array, it just adds the param key with an empty value.
+	 *
+	 * @param array $atts
 	 * @access public
 	 * @return void
 	 */
@@ -395,8 +398,8 @@ class Cur_Shortcodes_Generator{
 
 	/**
 	 * Checks to see if an array is associative or indexed.
-	 * 
-	 * @param array $array 
+	 *
+	 * @param array $array
 	 * @access public
 	 * @return bool
 	 */
@@ -405,13 +408,13 @@ class Cur_Shortcodes_Generator{
 	}
 
 	/**
-	 * Adds a shortcode to WordPress. If no function is provided, it creates 
+	 * Adds a shortcode to WordPress. If no function is provided, it creates
 	 * a simple shortcode based via add_simple_shortcode.
 	 *
-	 * @see add_simple_shortcode 
-	 * @param string $shortcode 
-	 * @param string $function 
-	 * @param string $tag 
+	 * @see add_simple_shortcode
+	 * @param string $shortcode
+	 * @param string $function
+	 * @param string $tag
 	 * @access public
 	 * @return void
 	 */
@@ -422,18 +425,18 @@ class Cur_Shortcodes_Generator{
 		if( empty( $function ) ){
 			$this->add_simple_shortcode( $shortcode, $tag );
 			return;
-		}	
+		}
 
 		add_shortcode( $shortcode, $function );
-			
+
 	}
 
 	/**
-	 * Creates a simple shortcode based on this template: <tag 
+	 * Creates a simple shortcode based on this template: <tag
 	 * class="shortcode"> Content </tag>, [shortcode][/shortcode]
-	 * 
-	 * @param string $shortcode 
-	 * @param string $tag 
+	 *
+	 * @param string $shortcode
+	 * @param string $tag
 	 * @access public
 	 * @return void
 	 */
@@ -449,33 +452,33 @@ class Cur_Shortcodes_Generator{
 
 	/**
 	 * Compiles all the shortcode data to write to editor_plugin.js
-	 * 
-	 * @param string $data 
-	 * @param string $output 
+	 *
+	 * @param string $data
+	 * @param string $output
 	 * @access public
 	 * @return void
 	 */
 	function compile( $data, $output ){
-		
+
 
 		$file_start = '
 (
 	function(){
-	
+
 		tinymce.create(
 			"tinymce.plugins.'. $this->shortcodes['title'] . '",
 			{
 				init: function(d,e) {},
 				createControl:function(d,e)
 				{
-				
+
 					if(d=="' . $this->shortcodes['slug'] . '"){
-					
+
 						d=e.createMenuButton( "' . $this->shortcodes['slug'] . '",{
 							title:"Insert Shortcode",
 							icons:false
 							});
-							
+
 							var a=this;
                             d.onRenderMenu.add(function(c,b){
 ';
@@ -483,16 +486,16 @@ class Cur_Shortcodes_Generator{
 $file_end = '
 							});
 						return d
-					
+
 					} // End IF Statement
-					
+
 					return null
 				},
-		
+
                 addImmediate: function (d,e,a){
                     d.add({
                         title:e,
-                        onclick:function(){ 
+                        onclick:function(){
                             tinyMCE.activeEditor.execCommand( "mceInsertContent",false,a)
                         }
                     })
@@ -500,16 +503,16 @@ $file_end = '
                 addSelectable: function (d,e,open,close,a){
                     d.add({
                         title: e,
-                        onclick:function(){ 
+                        onclick:function(){
                             //.execCommand( "mceInsertContent",false,a)
                             tinyMCE.activeEditor.selection.setContent(open + tinyMCE.activeEditor.selection.getContent() + close);
                         }
                     })
                 }
-				
+
 			}
 		);
-		
+
 		tinymce.PluginManager.add( "' . $this->shortcodes['title'] . '", tinymce.plugins.' . $this->shortcodes['title'] . ');
 	}
 )();
@@ -542,5 +545,5 @@ function cur_shortcode_atts( $shortcode_slug, $atts ){
  */
 function cur_remove_empty_tags( $content ){
 	$pattern = "/<[^\/>]*>([\s]?)*<\/[^>]*>/";
-	return preg_replace($pattern, '', $content); 
+	return preg_replace($pattern, '', $content);
 }

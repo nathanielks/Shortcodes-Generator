@@ -1,5 +1,13 @@
 <?php
 
+//Courtesy Alix Axel, http://stackoverflow.com/questions/2762061/how-to-add-http-if-its-not-exists-in-the-url
+function cur_add_http($url) {
+    if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
+        $url = "http://" . $url;
+    }
+    return esc_url( $url );
+}
+
 function cur_color_block( $atts, $content = null ) {
 	extract( cur_shortcode_atts( array(
 		'parent' => 'color-block',
@@ -39,7 +47,7 @@ function cur_button( $atts, $content = null ) {
 	extract( cur_shortcode_atts(
 	'button'
 	, $atts ) );
-	return '<a href="' . addhttp( $link ) . '" class="button ' . $color . ' ' . $size . ' ' . $class . '">' . do_shortcode($content) . '</a>';
+	return '<a href="' . cur_add_http( $link ) . '" class="button ' . $color . ' ' . $size . ' ' . $class . '">' . do_shortcode($content) . '</a>';
 }
 
 function cur_small( $atts, $content = null ) {
