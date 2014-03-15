@@ -4,7 +4,7 @@
 Plugin Name: Shortcodes Generator
 Plugin URI: http://fightthecurrent.org/plugins/shortcodes-generator
 Description: A plugin to generate shortcodes and a corresponding button in the WordPress visual editor. Wicked!
-Version: 1.2
+Version: 1.2.1
 Author: Nathaniel Schweinberg
 Author URI: http://fightthecurrent.org
 Author Email: nathaniel@fightthecurrent.org

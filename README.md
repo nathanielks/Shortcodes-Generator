@@ -1,17 +1,17 @@
 # Shortcodes Generator #
-Contributors: fightthecurrent   
-Donate link: http://bit.ly/QhXuBc    
-Tags: shortcodes, theme, generator, develop     
-Requires at least: 3.0   
-Tested up to: 3.7.1   
-Stable tag: 1.2
+Contributors: fightthecurrent
+Donate link: http://bit.ly/QhXuBc
+Tags: shortcodes, theme, generator, develop
+Requires at least: 3.0
+Tested up to: 3.8.1
+Stable tag: 1.2.1
 
 A plugin to generate shortcodes and a corresponding button in the WordPress visual editor. Wicked!
 
 ## Description ##
 
 Adding shortcodes to the Visual Editor can be a pain in the buttocks. Not anymore.
-Now, you can add shortcodes and a button to the editor as simply as using an 
+Now, you can add shortcodes and a button to the editor as simply as using an
 array and this plugin. [How neat is that?](http://bit.ly/Pvj4ie)
 
 To check out more details on how to use the plugin, please visit [the plugin site.](http://fightthecurrent.org/plugins/shortcodes-generator)
@@ -43,7 +43,7 @@ Well, after you've moved the `shortcodes` folder to your theme, open up
 
 That would create a shortcode that looks like this: `[button]`
 
-Then, for every shortcode you wish to add, just repeat 
+Then, for every shortcode you wish to add, just repeat
 `$shortcodes['shortcode']` with the details filled in!
 
 The template is as follows:
@@ -75,14 +75,14 @@ To use a specific function along with the short code, all you have to do is pass
 `'function' => 'function_name'` as one of the paramaters for the array. Here's
 an example:
 
-	$shortcodes['button'] = array(  
-		'shortcode' => 'button',  
-		'function' => 'cur_button_shortcode',  
-		'selectable' => 1  
-		'atts' => array(  
-			'class', 'color'  
-		),  
-	);  
+	$shortcodes['button'] = array(
+		'shortcode' => 'button',
+		'function' => 'cur_button_shortcode',
+		'selectable' => 1
+		'atts' => array(
+			'class', 'color'
+		),
+	);
 
 The shortcode will now use `cur_button_shortcode` as the function to run for
 the shortcode. The shortcode will look like this:
@@ -107,9 +107,29 @@ I will eventually add a ThickBox dialogue so that people can have default
 selections picked out for them, and actually have more of a UI. But this will
 do for now.
 
+### Is it possible to embed into themes? ###
+
+Sure is! To do that, move the plugin file into your theme and include this code
+in your functions.php file:
+
+	add_action( 'after_setup_theme', 'cur_shortcodes_theme_setup');
+	function cur_shortcodes_theme_setup(){
+		// We're assuming the plugin directory is located in
+		// /wp-content/themes/themename/shortcodes-generator/
+		define( 'CSG_URI', get_template_directory_uri() . '/shortcodes-generator/' );
+		require_once 'shortcodes-generator/cur-shortcodes-generator.php';
+		$csg = Cur_Shortcodes_Generator::get_instance();
+	}
+
+It'll take care of the rest!
+
+
 ## Changelog ##
 
-### 1.2 ### 
+### 1.2.1 ###
+* Added CSG_URI to more easily embed plugin into themes
+
+### 1.2 ###
 * BREAKING CHANGE: Changed params to atts in shortcode definition array
 * Added cur_shortcode_atts so as to reduce repitition of shortcode attribute definitions. There was too much repition across array.php and functions.php
 * Updated plugin to singleton pattern. Use Cur_Shortcodes_Generator::get_instance() to retreive instance of the class.
